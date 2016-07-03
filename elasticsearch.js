@@ -15,7 +15,7 @@ function deleteIndex() {
         index: indexName
     });
 }
-exports.deleteIndx = deleteIndex;
+exports.deleteIndex = deleteIndex;
 
 /**
 * create the index
@@ -69,7 +69,7 @@ function addDocument(document) {
             content: document.content,
             suggest: {
                 input: document.title.split(" "),
-                output: document.title+document.content,
+                output: document.title,
                 //outro: document.content,
                 //output2: document.content
                 payload: document.metadata || {}
@@ -89,13 +89,49 @@ function getSuggestions(input) {
             docsuggest: {
                 text: input,
                 completion: {
-                    field: "suggest",
+                    //field: "suggest",
+                    field:"suggest",
                     fuzzy: true
                 }
             }
-        }
+        }   
     });
- return searchHitToResult(resultado);
 }
 exports.getSuggestions = getSuggestions;
 
+
+function procura(q){
+    Cliente.search({
+        q: q,
+    }).then(function (body) {
+        //eventEmitter.emit('doOutput', {message:'okay', hits:body.hits.hits});
+      output({message:'okay', hits:body.hits.hits});
+
+    }, function (error) {
+        console.trace(error.message);
+    });
+}
+exports.procura=procura;
+
+
+
+function output(data) {
+
+    if(data.hits) {
+        str = '';
+        for(i=0; i<data.hits.length; i++) {
+            var hit = data.hits[i];
+
+            var D = new Date(hit._source.published_at*1000);
+            var published = util.format('%s-%s-%s',
+                D.getFullYear(), D.getMonth(), D.getDate());
+
+            str += util.format('%s - %s (Score: %s, ID: %s)',
+                hit._source.title, published, hit._score, hit._id);
+        }
+        console.log("str:"+str);
+        return str;
+        } else {
+        return;
+    } 
+}

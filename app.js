@@ -2,6 +2,10 @@ var express = require ('express');
 var app = module.exports = express();
 var bodyParser = require('body-parser')
 var port = '3000';
+var util = require('util');
+var events = require('events');
+var eventEmitter = new events.EventEmitter();
+
 app.listen(port);
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -41,6 +45,14 @@ app.post('/entities', function(req, res){
 	elastic.addDocument(req.body).then(function (result) {res.json(result) });
 
 });
+
+app.get('/buscar', function(req,res){
+	console.log(req.query.q);
+	//elastic.procura(req.query.q);
+	res.end("teste");
+});
+
+
 
 
 
