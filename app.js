@@ -28,21 +28,18 @@ app.get('/', function(req,res){
 
 app.get('/entities', function(req,res){
 	console.log(req.query.q);
-	
-	var conteudo;
-	
-	elastic.getSuggestions(req.query.q).then(
-		function (result) {
-		
-		res.json(result);
-		
-		console.log(result);
+
+	elastic.autoComplete(req.query.q).then(
+		function (result) {	
+			res.json(result);
+			console.log(result);
 	});
 });
 
 app.post('/entities', function(req, res){
 	var conteudo;
-	elastic.addDocument(req.body).then(function (result) {res.json(result) });
+	elastic.add(req.body).then(function (result) {res.json(result) });
+	console.log(req.body);
 
 });
 
@@ -52,7 +49,11 @@ app.get('/buscar', function(req,res){
 	res.end("teste");
 });
 
-
+app.get('/delete', function(req,res){
+	console.log(req.query.q);
+	elastic.deleteIndex();
+	res.end("deletadp");
+});
 
 
 
@@ -66,7 +67,7 @@ elastic.indexExists().then(function (exists) {
     var promises = [
       'Raspberry pi'
     ].map(function (inicio) {
-      return elastic.addDocument({
+      return elastic.add({
         title: inicio,
         content: "qualquer",
         metadata: {

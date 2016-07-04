@@ -1,0 +1,14 @@
+{
+  "name": "front_end",
+  "homepage": "https://github.com/brunnoaraujo/new_search_engine",
+  "authors": [
+    "Brunno Araújo <brunnobaraujo@gmail.com>"
+  ],
+  "description": "Front End para new_search_engine",
+  "main": "index.html",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "angular": "^1.5.7"
+  }
+}

@@ -1,0 +1,79 @@
+<html ng-app="bsearch">
+
+<head>
+  <title>Bsearch : A new Search Engine</title>
+
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+<script src="bower_components/angular/angular.min.js"></script>
+
+</head>
+
+<body ng-controller="MainCtrl as mainCtrl">
+
+<div class="container">
+    <form name="addForm" ng-submit="mainCtrl.add()">
+
+      <h1 class="text-center">Search Engine - Indexar</h1>
+      <div class="form-group">
+      <input type="text" class="form-control" placeholder="Title" ng-model="mainCtrl.newTodo.title" required>
+      </div>
+      <div class="form-group">
+      <input type="text" class="form-control" placeholder="content" ng-model="mainCtrl.newTodo.content" required>
+      </div>
+      <div class="form-group">
+      <input type="submit" class="btn btn-info" value="Enviar">
+     </div>
+      	
+    </form>
+
+  </div>
+
+<div class="container">
+    <form name="searchForm" ng-submit="mainCtrl.busca()">
+
+      <h1 class="text-center">Search Engine - Buscar</h1>
+      
+      <div class="form-group">
+      <input type="text" class="form-control" placeholder="O que você procura?" ng-model="pesquisa" required>
+      </div>
+
+      <div class="form-group">
+      <input type="submit" class="btn btn-info" value="Buscar">
+     </div>
+	      	
+    </form>
+
+  </div>
+
+<script>
+  angular.module('bsearch', [])
+    .controller('MainCtrl', ['$http', function($http) {
+      var valor;
+      var self = this;
+      self.items = [];
+      self.newTodo = {};
+      var fetchTodos = function() {
+        return $http.get('http://localhost:3000/?ras').then(
+            function(response) {
+          self.items = response.data;
+          valor = response.data;
+        }, function(errResponse) {
+          console.error('Error while fetching notes');
+        });
+      };
+      fetchTodos();
+      self.add = function() {
+        $http.post('http://localhost:3000/entities', self.newTodo)
+            .then(fetchTodos)
+            .then(function(response) {
+              self.newTodo = {};
+            });
+      };
+
+    }]);
+
+</script>
+
+</body>
+
+</html>

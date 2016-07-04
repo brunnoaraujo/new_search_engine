@@ -5,7 +5,7 @@ var Cliente = new elasticsearch.Client({
     log: 'info'
 });
 
-var indexName = "randomindex";
+var indexName = "myindex";
 
 /**
 * Delete an existing index
@@ -59,8 +59,9 @@ function initMapping() {
     });
 }
 exports.initMapping = initMapping;
-var conteudo=0;
-function addDocument(document) {
+
+
+function add(document) {
     return Cliente.index({
         index: indexName,
         type: "document",
@@ -72,15 +73,15 @@ function addDocument(document) {
                 output: document.title,
                 //outro: document.content,
                 //output2: document.content
-                payload: document.metadata || {}
+                payload: document.payload || {}
             }
         }
 
     });
 }
-exports.addDocument = addDocument;
+exports.add = add;
 
-function getSuggestions(input) {
+function autoComplete(input) {
     
     return Cliente.suggest({
         index: indexName,
@@ -97,41 +98,5 @@ function getSuggestions(input) {
         }   
     });
 }
-exports.getSuggestions = getSuggestions;
+exports.autoComplete = autoComplete;
 
-
-function procura(q){
-    Cliente.search({
-        q: q,
-    }).then(function (body) {
-        //eventEmitter.emit('doOutput', {message:'okay', hits:body.hits.hits});
-      output({message:'okay', hits:body.hits.hits});
-
-    }, function (error) {
-        console.trace(error.message);
-    });
-}
-exports.procura=procura;
-
-
-
-function output(data) {
-
-    if(data.hits) {
-        str = '';
-        for(i=0; i<data.hits.length; i++) {
-            var hit = data.hits[i];
-
-            var D = new Date(hit._source.published_at*1000);
-            var published = util.format('%s-%s-%s',
-                D.getFullYear(), D.getMonth(), D.getDate());
-
-            str += util.format('%s - %s (Score: %s, ID: %s)',
-                hit._source.title, published, hit._score, hit._id);
-        }
-        console.log("str:"+str);
-        return str;
-        } else {
-        return;
-    } 
-}

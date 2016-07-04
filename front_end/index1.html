@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>Bsearch : A new Search Engine</title>
+
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+<script src="bower_components/angular/angular.min.js"></script>
+
+</head>
+
+<body>
+
+
+
+<div class="container" ng-app="app" ng-controller="HttpGetController">
+	<h1 class="text-center">Search Engine - Indexar</h1>
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Title" ng-model="title">
+			</div>
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Content" ng-model="content">
+			</div>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" ng-click="SendData()">Enviar</button>
+			</div>
+	
+</div>
+
+
+
+
+<div class="container">
+	<h1 class="text-center">Search Engine - Buscar</h1>
+	<form role="form" ng-controller="kkSlkkkkkkkkkkkkkkkkkkkkkkkkkkkk">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="O que você procura?" ng-model="busca">
+			</div>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" ng-click="login(usuario)">Buscar</button>
+			</div>
+	</form>
+</div>
+    
+</body>
+
+<script>
+    var app = angular.module("app", []);
+    app.controller("HttpGetController", function ($scope, $http) {
+
+        $scope.SendData = function () {
+           // use $.param jQuery function to serialize data from JSON 
+            var data = $.param({
+                title: $scope.title,
+                content: $scope.content
+            });
+        
+            var config = {
+                headers : {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
+
+            $http.post('http://localhost:3000/entities', data)
+            .success(function (data, status, headers, config) {
+                $scope.PostDataResponse = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
+        };
+
+    });
+</script>
+</html>
