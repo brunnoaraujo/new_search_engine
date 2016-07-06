@@ -1,4 +1,4 @@
-<html ng-app="bsearch">
+<html>
 
 <head>
   <title>Bsearch : A new Search Engine</title>
@@ -8,70 +8,85 @@
 
 </head>
 
-<body ng-controller="MainCtrl as mainCtrl">
+<body>
 
-<div class="container">
-    <form name="addForm" ng-submit="mainCtrl.add()">
+<div class="container" ng-app="app" ng-controller="HttpGetController">
 
-      <h1 class="text-center">Search Engine - Indexar</h1>
-      <div class="form-group">
-      <input type="text" class="form-control" placeholder="Title" ng-model="mainCtrl.newTodo.title" required>
-      </div>
-      <div class="form-group">
-      <input type="text" class="form-control" placeholder="content" ng-model="mainCtrl.newTodo.content" required>
-      </div>
-      <div class="form-group">
-      <input type="submit" class="btn btn-info" value="Enviar">
-     </div>
-      	
-    </form>
-
-  </div>
-
-<div class="container">
-    <form name="searchForm" ng-submit="mainCtrl.busca()">
-
-      <h1 class="text-center">Search Engine - Buscar</h1>
+    <h1 class="text-center">Search Engine - Indexar</h1>
+    <form name="addForm" ng-submit="add()" ng-controller="HttpGetController"> 
+    <div class="form-group">
+    <input type="text" class="form-control" placeholder="Title" ng-model="post.title" required>
+    </div>
       
-      <div class="form-group">
-      <input type="text" class="form-control" placeholder="O que você procura?" ng-model="pesquisa" required>
-      </div>
-
-      <div class="form-group">
-      <input type="submit" class="btn btn-info" value="Buscar">
-     </div>
-	      	
+      
+    <div class="form-group">
+    <input type="text" class="form-control" placeholder="content" ng-model="post.content" required>
+    </div>
+      
+    <div class="form-group">
+    <input type="submit" class="btn btn-info" value="Indexar Dados">
+    </div>
     </form>
+      	
+    <h1 class="text-center">Search Engine - Buscar</h1>
+    <div class="form-group">
+    <input class="form-control" type="text" name="keyword" ng-model="keyword" required />
+    </div>
+    <div class="form-group">
+    <button class="btn btn-info" ng-click="SearchDatas()">Search</button> 
+    </div>
+    <div class="form-group">
+    <button class="btn btn-info" ng-click="GetAllData()">Get All Data</button> 
+    </div>
+    <hr />
+    <ul>
+        <li ng-repeat="d in Details">
+            {{ d }}
+        </li>
+    </ul>
+    <p ng-bind="ResponseDetails"></p>
+    {{ResponseDetails}}
+</div>
 
-  </div>
+
 
 <script>
-  angular.module('bsearch', [])
-    .controller('MainCtrl', ['$http', function($http) {
-      var valor;
-      var self = this;
-      self.items = [];
-      self.newTodo = {};
-      var fetchTodos = function() {
-        return $http.get('http://localhost:3000/?ras').then(
-            function(response) {
-          self.items = response.data;
-          valor = response.data;
-        }, function(errResponse) {
-          console.error('Error while fetching notes');
-        });
-      };
-      fetchTodos();
-      self.add = function() {
-        $http.post('http://localhost:3000/entities', self.newTodo)
-            .then(fetchTodos)
-            .then(function(response) {
-              self.newTodo = {};
+    var app = angular.module("app", []);
+    app.controller("HttpGetController", function ($scope, $http) {
+        
+        $scope.keyword = '';
+
+        $scope.GetAllData = function () {
+            $http.get('http://localhost:3000/entities/?q=rasp')
+            .success(function (data, status, headers, config) {
+                $scope.Details = data;
+            })
+            .error(function (data, status, header, config) {
+            });
+        };
+
+         $scope.add = function() {
+        	$http.post('http://localhost:3000/entities', $scope.post)
+            	.then(fetchTodos)
+            	.then(function(response) {
+              	$scope.post= "Default";
+
             });
       };
 
-    }]);
+        $scope.SearchDatas = function () {
 
+
+            $http.get('http://localhost:3000/entities/?q='+ $scope.keyword)
+            .success(function (data, status, headers, config) {
+                $scope.Details = data;
+            })
+            .error(function (data, status, header, config) {
+                
+            });
+        };
+
+    });
 </script>
 
 </body>
