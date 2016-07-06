@@ -2,9 +2,7 @@ var express = require ('express');
 var app = module.exports = express();
 var bodyParser = require('body-parser')
 var port = '3000';
-var util = require('util');
-var events = require('events');
-var eventEmitter = new events.EventEmitter();
+
 
 app.listen(port);
 app.use(bodyParser.urlencoded({extended:true}));
@@ -29,7 +27,7 @@ app.get('/', function(req,res){
 app.get('/entities', function(req,res){
 	console.log(req.query.q);
 
-	elastic.autoComplete(req.query.q).then(
+	elastic.autosearch(req.query.q).then(
 		function (result) {	
 			res.json(result);
 			console.log(result);

@@ -81,7 +81,7 @@ function add(document) {
 }
 exports.add = add;
 
-function autoComplete(input) {
+function autosearch(input) {
     
     return Cliente.suggest({
         index: indexName,
@@ -98,5 +98,5 @@ function autoComplete(input) {
         }   
     });
 }
-exports.autoComplete = autoComplete;
+exports.autosearch = autosearch;
 
